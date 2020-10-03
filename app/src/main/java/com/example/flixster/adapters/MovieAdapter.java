@@ -12,9 +12,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.util.Pair;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.flixster.MainActivity;
 import com.example.flixster.R;
 import com.example.flixster.models.DetailActivity;
 import com.example.flixster.models.Movie;
@@ -22,6 +25,8 @@ import com.example.flixster.models.Movie;
 import org.parceler.Parcels;
 
 import java.util.List;
+
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
@@ -66,7 +71,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tvTitle);
-            tvOverview = itemView.findViewById(R.id.tvTitle);
+            tvOverview = itemView.findViewById(R.id.tvOverview);
             ivPoster = itemView.findViewById(R.id.ivPoster);
             container = itemView.findViewById(R.id.container);
         }
@@ -81,14 +86,26 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> 
                 imageUrl = movie.getPosterPath();
             }
 
-            Glide.with(context).load(imageUrl).into(ivPoster);
+
+            int radius = 30;
+            int margin = 10;
+            Glide.with(context).load(imageUrl).fitCenter()
+                    .transform(new RoundedCornersTransformation(radius, margin))
+                    .into(ivPoster);
 
             container.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent i = new Intent(context, DetailActivity.class);
                     i.putExtra("movie", Parcels.wrap(movie));
+                    /*
+                    Pair<View, String> p1 = Pair.create((View)tvTitle, "title");
+                    Pair<View, String> p2 = Pair.create((View)tvOverview, "overview");
+                    ActivityOptionsCompat options = ActivityOptionsCompat
+                                .makeSceneTransitionAnimation(view,  p1, p2);
+                                 */
                     context.startActivity(i);
+
                 }
 
             });
